@@ -51,16 +51,7 @@ df = pd.DataFrame({
         vikar_kostnad_total,
         overtid_kostnad_total
     ]
-})
-
-# 📊 Eksport til Excel
-excel_buffer = io.BytesIO()
-with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
-    df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
-st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-
-# 📄 Eksport til PDF
-def generate_pdf():
+})def generate_pdf():
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
@@ -79,19 +70,17 @@ def generate_pdf():
 
     # Legg til tabell i PDF
     pdf.set_font("Arial", "B", 12)
-    pdf.cell(100, 10, "Kategori", border=1)
-    pdf.cell(80, 10, "Kostnad (kr)", border=1, ln=True)
+    pdf.cell(100, 10, "Kategori
 
-    pdf.set_font("Arial", "", 12)
-    for index, row in df.iterrows():
-        pdf.cell(100, 10, row["Kategori"], border=1)
-        pdf.cell(80, 10, f"{row['Kostnad (kr)']:,.0f} kr", border=1, ln=True)
+# 📊 Eksport til Excel
+excel_buffer = io.BytesIO()
+with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+    df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
+st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-    # **Løsning: Bruk BytesIO for å lagre PDF-en i minnet**
-    pdf_output = io.BytesIO()
-    pdf.output(pdf_output, 'F')  # Endret fra pdf_output direkte til filmodus 'F'
-    pdf_output.seek(0)  # Gå til starten av filen
-    return pdf_output
+# 📄 Eksport til PDF
+def generate_pdf():
+    
 
 
 st.download_button(label="📥 Last ned som PDF", data=generate_pdf(), file_name="sykefraværskostnader.pdf", mime="application/pdf")
