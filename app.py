@@ -66,17 +66,17 @@ def generate_pdf():
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
     pdf.cell(200, 10, "Sykefraværskostnader i virksomheten", ln=True, align="C")
-    
+
     pdf.set_font("Arial", "", 12)
     pdf.ln(10)  # Linjeskift
-    
+
     # Legg til beregninger i PDF
     pdf.cell(200, 10, f"Totale kostnader per ansatt: {total_kostnad_per_ansatt:,.0f} kr", ln=True)
     pdf.cell(200, 10, f"Totale kostnader for virksomheten: {total_kostnad_per_virksomhet:,.0f} kr", ln=True)
     pdf.cell(200, 10, f"Årlige totale kostnader: {total_aarskostnad:,.0f} kr", ln=True)
-    
+
     pdf.ln(10)  # Linjeskift
-    
+
     # Legg til tabell i PDF
     pdf.set_font("Arial", "B", 12)
     pdf.cell(100, 10, "Kategori", border=1)
@@ -87,8 +87,11 @@ def generate_pdf():
         pdf.cell(100, 10, row["Kategori"], border=1)
         pdf.cell(80, 10, f"{row['Kostnad (kr)']:,.0f} kr", border=1, ln=True)
 
+    # **Løsning: Bruk BytesIO for å lagre PDF-en i minnet**
     pdf_output = io.BytesIO()
-    pdf.output(pdf_output)
-    return pdf_output.getvalue()
+    pdf.output(pdf_output, 'F')  # Endret fra pdf_output direkte til filmodus 'F'
+    pdf_output.seek(0)  # Gå til starten av filen
+    return pdf_output
+
 
 st.download_button(label="📥 Last ned som PDF", data=generate_pdf(), file_name="sykefraværskostnader.pdf", mime="application/pdf")
