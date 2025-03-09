@@ -72,3 +72,13 @@ st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue()
 
 st.markdown('[🔗 Vil du ha hjelp til å få ned kostnadene? Ta kontakt med oss her](https://www.as3.no/for-virksomheter/#sykefravr)')
 
+# 📌 Kildehenvisninger
+st.markdown("## 📚 Kildehenvisninger")
+st.markdown("""
+- **NAVs sykefraværsstatistikk**: [NAV – Sykefravær](https://www.nav.no/no/nav-og-samfunn/statistikk/sykefravar-statistikk)  
+- **Arbeidsgiverperioden på 16 dager**: [Lovdata – Folketrygdloven § 8-19](https://lovdata.no/dokument/NL/lov/1997-02-28-19/KAPITTEL_8#%C2%A78-19)  
+- **Sosiale avgifter (14%)**: Basert på vanlige norske arbeidsgiveravgifter  
+- **Indirekte kostnader (50% av lønn)**: HR-beregninger brukt i sykefraværsanalyser  
+""")
+
+
