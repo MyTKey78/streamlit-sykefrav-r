@@ -58,7 +58,7 @@ fig, ax = plt.subplots(figsize=(8,6))
 kategorier = df["Kategori"]
 verdier = df["Kostnad (kr)"]
 
-ax.bar(kategorier, verdier, color=["blue", "green", "red", "purple", "orange"])
+ax.bar(kategorier, verdier, color=["dark blue", "blue", "light blue", "grey", "purple"])
 ax.set_ylabel("Kostnad (kr)")
 ax.set_title("Fordeling av sykefraværskostnader")
 ax.set_xticklabels(kategorier, rotation=45, ha="right")
@@ -69,3 +69,5 @@ excel_buffer = io.BytesIO()
 with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
     df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
 st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+st.markdown("### 🔗 [Vil du ha hjelp til å få ned kostnadene? Ta kontakt med oss](https://www.as3.no)")
