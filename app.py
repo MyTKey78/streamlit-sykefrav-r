@@ -58,7 +58,7 @@ fig, ax = plt.subplots(figsize=(8,6))
 kategorier = df["Kategori"]
 verdier = df["Kostnad (kr)"]
 
-ax.bar(kategorier, verdier, color=["dark blue", "blue", "light blue", "grey", "purple"])
+ax.bar(kategorier, verdier, color=["red", "blue", "purple", "yellow", "green"])
 ax.set_ylabel("Kostnad (kr)")
 ax.set_title("Fordeling av sykefraværskostnader")
 ax.set_xticklabels(kategorier, rotation=45, ha="right")
