@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+from fpdf import FPDF
+import io
 
 # Tittel
 st.title("Sykefraværskostnader i virksomheten")
@@ -21,29 +22,73 @@ overtid_kostnad = st.sidebar.number_input("Overtidskostnad per dag (kr)", min_va
 # Beregninger
 arbeidsdager_per_aar = 260
 arbeidsgiverperiode = 16
+direkte_lonnskostnad = (gjennomsnittslonn * (sykefravarsprosent / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
+sosiale_avgifter = direkte_lonnskostnad * 1.14
+indirekte_kostnader = direkte_lonnskostnad * 0.5
 
-# --- Sykefraværstrend med brukerinput ---
-st.subheader("Legg inn sykefravær per måned (%)")
+# Totale kostnader
+vikar_kostnad_total = (vikar_kostnad * arbeidsgiverperiode * (sykefravarsprosent / 100) * antall_ansatte)
+overtid_kostnad_total = (overtid_kostnad * arbeidsgiverperiode * (sykefravarsprosent / 100) * antall_ansatte)
 
-maaneder = ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"]
-sykefravær_per_maaned = {}
+total_kostnad_per_ansatt = sosiale_avgifter + indirekte_kostnader
+total_kostnad_per_virksomhet = total_kostnad_per_ansatt * antall_ansatte
 
-for mnd in maaneder:
-    sykefravær_per_maaned[mnd] = st.slider(f"{mnd}", 0.0, 20.0, sykefravarsprosent, 0.1)
+total_aarskostnad = (total_kostnad_per_virksomhet + vikar_kostnad_total + overtid_kostnad_total) * (arbeidsdager_per_aar / arbeidsgiverperiode)
 
-# Konverter input til DataFrame
-data_trend = pd.DataFrame({
-    "Måned": maaneder,
-    "Sykefraværsprosent": [sykefravær_per_maaned[mnd] for mnd in maaneder]
+# Vise resultater
+st.subheader("Beregnet sykefraværskostnad")
+st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
+st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_virksomhet:,.0f} kr**")
+st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
+
+# Lag en DataFrame for eksport
+df = pd.DataFrame({
+    "Kategori": ["Direkte lønnskostnader", "Sosiale avgifter", "Indirekte kostnader", "Vikarutgifter", "Overtidsutgifter"],
+    "Kostnad (kr)": [
+        direkte_lonnskostnad * antall_ansatte,
+        sosiale_avgifter * antall_ansatte,
+        indirekte_kostnader * antall_ansatte,
+        vikar_kostnad_total,
+        overtid_kostnad_total
+    ]
 })
 
-# Beregn kostnader for hver måned basert på sykefravær
-data_trend["Kostnad"] = (gjennomsnittslonn * (data_trend["Sykefraværsprosent"] / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar)) * antall_ansatte
+# 📊 Eksport til Excel
+excel_buffer = io.BytesIO()
+with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+    df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
+st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-# Vis trendgraf
-st.subheader("Trend for sykefraværskostnader basert på faktiske data")
-fig, ax = plt.subplots(figsize=(8,6))
-sns.lineplot(data=data_trend, x="Måned", y="Kostnad", marker="o", ax=ax, color="blue")
-ax.set_ylabel("Kostnad (kr)")
-ax.set_title("Utvikling av sykefraværskostnader over året basert på faktiske tall")
-st.pyplot(fig)
+# 📄 Eksport til PDF
+def generate_pdf():
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    pdf.cell(200, 10, "Sykefraværskostnader i virksomheten", ln=True, align="C")
+    
+    pdf.set_font("Arial", "", 12)
+    pdf.ln(10)  # Linjeskift
+    
+    # Legg til beregninger i PDF
+    pdf.cell(200, 10, f"Totale kostnader per ansatt: {total_kostnad_per_ansatt:,.0f} kr", ln=True)
+    pdf.cell(200, 10, f"Totale kostnader for virksomheten: {total_kostnad_per_virksomhet:,.0f} kr", ln=True)
+    pdf.cell(200, 10, f"Årlige totale kostnader: {total_aarskostnad:,.0f} kr", ln=True)
+    
+    pdf.ln(10)  # Linjeskift
+    
+    # Legg til tabell i PDF
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(100, 10, "Kategori", border=1)
+    pdf.cell(80, 10, "Kostnad (kr)", border=1, ln=True)
+
+    pdf.set_font("Arial", "", 12)
+    for index, row in df.iterrows():
+        pdf.cell(100, 10, row["Kategori"], border=1)
+        pdf.cell(80, 10, f"{row['Kostnad (kr)']:,.0f} kr", border=1, ln=True)
+
+    pdf_output = io.BytesIO()
+    pdf.output(pdf_output)
+    return pdf_output.getvalue()
+
+st.download_button(label="📥 Last ned som PDF", data=generate_pdf(), file_name="sykefraværskostnader.pdf", mime="application/pdf")
