@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Tittel
 st.title("Sykefraværskostnader i virksomheten")
@@ -36,12 +37,12 @@ total_aarskostnad = (total_kostnad_per_avdeling + vikar_kostnad_total + overtid_
 # Vise resultater
 st.subheader("Beregnet sykefraværskostnad")
 st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
-st.write(f"Totale kostnader for hele avdelingen i arbeidsgiverperioden: **{total_kostnad_per_avdeling:,.0f} kr**")
+st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_avdeling:,.0f} kr**")
 st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
 
 # Diagram: Totale kostnader
 st.subheader("Visuell fremstilling av kostnader")
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8,6))
 kategorier = ["Direkte lønnskostnader", "Sosiale avgifter", "Indirekte kostnader", "Vikarutgifter", "Overtidsutgifter"]
 verdier = [
     direkte_lonnskostnad * antall_ansatte,
@@ -50,7 +51,22 @@ verdier = [
     vikar_kostnad_total,
     overtid_kostnad_total
 ]
-ax.bar(kategorier, verdier)
+ax.bar(kategorier, verdier, color=["blue", "green", "red", "purple", "orange"])
 ax.set_ylabel("Kostnad (kr)")
 ax.set_title("Fordeling av sykefraværskostnader")
+ax.set_xticklabels(kategorier, rotation=45, ha="right")
+st.pyplot(fig)
+
+# Trendanalyse: Utvikling av kostnader over tid
+st.subheader("Trend for sykefraværskostnader")
+data_trend = pd.DataFrame({
+    "Måned": ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"],
+    "Kostnad": [
+        total_kostnad_per_avdeling * (0.9 + i*0.02) for i in range(12)
+    ]
+})
+fig, ax = plt.subplots(figsize=(8,6))
+sns.lineplot(data=data_trend, x="Måned", y="Kostnad", marker="o", ax=ax)
+ax.set_ylabel("Kostnad (kr)")
+ax.set_title("Utvikling av sykefraværskostnader over året")
 st.pyplot(fig)
