@@ -50,8 +50,17 @@ df = pd.DataFrame({
         indirekte_kostnader * antall_ansatte,
         vikar_kostnad_total,
         overtid_kostnad_total
-    ]
-})def generate_pdf():
+   
+# 📊 Eksport til Excel
+excel_buffer = io.BytesIO()
+with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
+    df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
+st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+# 📄 Eksport til PDF
+def generate_pdf():
+     
+  def generate_pdf():
     pdf = FPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
@@ -70,17 +79,19 @@ df = pd.DataFrame({
 
     # Legg til tabell i PDF
     pdf.set_font("Arial", "B", 12)
-    pdf.cell(100, 10, "Kategori
+    pdf.cell(100, 10, "Kategori", border=1)
+    pdf.cell(80, 10, "Kostnad (kr)", border=1, ln=True)
 
-# 📊 Eksport til Excel
-excel_buffer = io.BytesIO()
-with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
-    df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
-st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    pdf.set_font("Arial", "", 12)
+    for index, row in df.iterrows():
+        pdf.cell(100, 10, row["Kategori"], border=1)
+        pdf.cell(80, 10, f"{row['Kostnad (kr)']:,.0f} kr", border=1, ln=True)
 
-# 📄 Eksport til PDF
-def generate_pdf():
-    
+    # **Løsning: Lagre PDF i minnet med BytesIO**
+    pdf_output = io.BytesIO()
+    pdf.output(pdf_output, dest='S')  # 'S' returnerer PDF som en byte-strøm
+    pdf_output.seek(0)  # Gå til starten av filen
+    return pdf_output.getvalue()  # Returnerer innholdet i PDF-en som bytes
 
 
 st.download_button(label="📥 Last ned som PDF", data=generate_pdf(), file_name="sykefraværskostnader.pdf", mime="application/pdf")
