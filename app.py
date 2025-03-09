@@ -70,4 +70,5 @@ with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
     df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
 st.download_button(label="📥 Last ned som Excel", data=excel_buffer.getvalue(), file_name="sykefraværskostnader.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-st.markdown("### 🔗 [Vil du ha hjelp til å få ned kostnadene? Ta kontakt med oss ved å trykke her](https://www.as3.no/for-virksomheter/#sykefravr"))
+st.markdown('[🔗 Vil du ha hjelp til å få ned kostnadene? Ta kontakt med oss her](https://www.as3.no/for-virksomheter/#sykefravr)')
+
