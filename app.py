@@ -113,3 +113,33 @@ analysevalg = st.multiselect(
 
 if st.button("📉 Få råd for å redusere sykefravær"):
     råd = redusere_sykefr
+# 🎯 Beregning av besparelse ved redusert sykefravær
+st.subheader("💰 Hvor mye kan virksomheten spare?")
+mål_sykefravær = st.slider("Sett et mål for sykefraværsprosent (%)", 0.0, sykefravarsprosent, max(0.0, sykefravarsprosent - 2.0), 0.1)
+
+# Beregn ny kostnad basert på mål
+direkte_lonnskostnad_ny = (gjennomsnittslonn * (mål_sykefravær / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
+sosiale_avgifter_ny = direkte_lonnskostnad_ny * 1.14
+indirekte_kostnader_ny = direkte_lonnskostnad_ny * 0.5
+
+total_kostnad_per_ansatt_ny = sosiale_avgifter_ny + indirekte_kostnader_ny
+total_kostnad_per_virksomhet_ny = total_kostnad_per_ansatt_ny * antall_ansatte
+
+# Beregn besparelse for arbeidsgiverperioden
+besparelse = total_kostnad_per_virksomhet - total_kostnad_per_virksomhet_ny
+
+# Beregn årlig besparelse
+total_aarskostnad_ny = (total_kostnad_per_virksomhet_ny * (arbeidsdager_per_aar / arbeidsgiverperiode))
+total_aarskostnad_nå = (total_kostnad_per_virksomhet * (arbeidsdager_per_aar / arbeidsgiverperiode))
+aarsbesparelse = total_aarskostnad_nå - total_aarskostnad_ny
+
+# 🎯 Vise resultat
+st.write(f"🔹 **Nåværende kostnad i arbeidsgiverperioden**: {total_kostnad_per_virksomhet:,.0f} kr")
+st.write(f"🔹 **Ny kostnad ved {mål_sykefravær:.1f}% sykefravær**: {total_kostnad_per_virksomhet_ny:,.0f} kr")
+st.write(f"✅ **Potensiell besparelse i arbeidsgiverperioden**: **{besparelse:,.0f} kr**")
+
+st.write("---")
+
+st.write(f"📆 **Nåværende årlige sykefraværskostnader**: {total_aarskostnad_nå:,.0f} kr")
+st.write(f"📆 **Nye årlige kostnader ved {mål_sykefravær:.1f}% sykefravær**: {total_aarskostnad_ny:,.0f} kr")
+st.write(f"💰 **Årlig total besparelse**: **{aarsbesparelse:,.0f} kr** 🎉")
