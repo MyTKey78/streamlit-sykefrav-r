@@ -81,4 +81,22 @@ st.markdown("""
 - **Indirekte kostnader (50% av lønn)**: HR-beregninger brukt i sykefraværsanalyser  
 """)
 
+# 🎯 Beregning av besparelse ved redusert sykefravær
+st.subheader("💰 Hvor mye kan virksomheten spare?")
+mål_sykefravær = st.slider("Sett et mål for sykefraværsprosent (%)", 0.0, sykefravarsprosent, max(0.0, sykefravarsprosent - 2.0), 0.1)
+
+# Beregn ny kostnad basert på mål
+direkte_lonnskostnad_ny = (gjennomsnittslonn * (mål_sykefravær / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
+sosiale_avgifter_ny = direkte_lonnskostnad_ny * 1.14
+indirekte_kostnader_ny = direkte_lonnskostnad_ny * 0.5
+
+total_kostnad_per_ansatt_ny = sosiale_avgifter_ny + indirekte_kostnader_ny
+total_kostnad_per_virksomhet_ny = total_kostnad_per_ansatt_ny * antall_ansatte
+
+besparelse = total_kostnad_per_virksomhet - total_kostnad_per_virksomhet_ny
+
+# Vise resultat
+st.write(f"🔹 **Nåværende kostnad**: {total_kostnad_per_virksomhet:,.0f} kr")
+st.write(f"🔹 **Ny kostnad ved {mål_sykefravær:.1f}% sykefravær**: {total_kostnad_per_virksomhet_ny:,.0f} kr")
+st.write(f"✅ **Potensiell besparelse**: **{besparelse:,.0f} kr** ved å redusere sykefraværet!")
 
