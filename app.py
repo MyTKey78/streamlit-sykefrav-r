@@ -81,22 +81,35 @@ st.markdown("""
 - **Indirekte kostnader (50% av lønn)**: HR-beregninger brukt i sykefraværsanalyser  
 """)
 
-# 🎯 Beregning av besparelse ved redusert sykefravær
-st.subheader("💰 Hvor mye kan virksomheten spare?")
-mål_sykefravær = st.slider("Sett et mål for sykefraværsprosent (%)", 0.0, sykefravarsprosent, max(0.0, sykefravarsprosent - 2.0), 0.1)
+def redusere_sykefravaer(analysevalg):
+    råd = ""
 
-# Beregn ny kostnad basert på mål
-direkte_lonnskostnad_ny = (gjennomsnittslonn * (mål_sykefravær / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
-sosiale_avgifter_ny = direkte_lonnskostnad_ny * 1.14
-indirekte_kostnader_ny = direkte_lonnskostnad_ny * 0.5
+    if "Arbeidsmiljø" in analysevalg:
+        råd += "- **Forbedre arbeidsmiljøet:** Sørg for et trygt og inkluderende arbeidsmiljø. Vurder tiltak som bedre ergonomi, fleksibilitet i arbeidstider og trivselstiltak.\n\n"
+    
+    if "Lederoppfølging" in analysevalg:
+        råd += "- **Styrke lederoppfølging:** God lederkommunikasjon og tett oppfølging av ansatte kan redusere sykefravær. Gi ledere opplæring i sykefraværsoppfølging.\n\n"
+    
+    if "Helsefremmende tiltak" in analysevalg:
+        råd += "- **Helsefremmende tiltak:** Tilby treningstilbud, helsekontroller og psykologisk støtte for å fremme helse og velvære blant ansatte.\n\n"
 
-total_kostnad_per_ansatt_ny = sosiale_avgifter_ny + indirekte_kostnader_ny
-total_kostnad_per_virksomhet_ny = total_kostnad_per_ansatt_ny * antall_ansatte
+    if "Forebygging av langtidssykefravær" in analysevalg:
+        råd += "- **Forebygge langtidssykefravær:** Tidlig intervensjon er nøkkelen. Kartlegg risikofaktorer og legg til rette for tilpasninger før fraværet blir langvarig.\n\n"
 
-besparelse = total_kostnad_per_virksomhet - total_kostnad_per_virksomhet_ny
+    if "Tilrettelegging" in analysevalg:
+        råd += "- **Bedre tilrettelegging:** Tilpass arbeidsoppgaver for ansatte med helseutfordringer. Bruk delvis sykemelding og gradvis tilbakeføring for å unngå langtidsfravær.\n\n"
 
-# Vise resultat
-st.write(f"🔹 **Nåværende kostnad**: {total_kostnad_per_virksomhet:,.0f} kr")
-st.write(f"🔹 **Ny kostnad ved {mål_sykefravær:.1f}% sykefravær**: {total_kostnad_per_virksomhet_ny:,.0f} kr")
-st.write(f"✅ **Potensiell besparelse**: **{besparelse:,.0f} kr** ved å redusere sykefraværet!")
+    if råd == "":
+        råd = "Velg minst én faktor for å få anbefalinger om hvordan redusere sykefraværet."
 
+    return råd
+
+# 🎯 Brukerinput for sykefraværsanalyse
+st.subheader("🔍 Hvordan redusere sykefraværet?")
+analysevalg = st.multiselect(
+    "Velg hvilke faktorer du vil analysere:",
+    ["Arbeidsmiljø", "Lederoppfølging", "Helsefremmende tiltak", "Forebygging av langtidssykefravær", "Tilrettelegging"]
+)
+
+if st.button("📉 Få råd for å redusere sykefravær"):
+    råd = redusere_sykefr
