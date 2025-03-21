@@ -57,7 +57,7 @@ st.image("as3 logo - ingen bakgrunn.png", width=200)
 st.markdown("""
     <div class="as3-header">
         <h1>Sykefraværskostnader i virksomheten</h1>
-        <p>Utviklet i tråd med AS3s designprofil</p>
+        
     </div>
 """, unsafe_allow_html=True)
 
@@ -177,6 +177,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
