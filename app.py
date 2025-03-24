@@ -85,6 +85,18 @@ st.markdown("""
 
 st.markdown("<div class='as3-container'>", unsafe_allow_html=True)
 
+# 🎯 Brukerinput for interaktive beregninger
+st.sidebar.header("Inndata for beregninger")
+
+antall_ansatte = st.sidebar.number_input("Antall ansatte", min_value=1, value=50)
+gjennomsnittslonn = st.sidebar.number_input("Gjennomsnittslønn per ansatt (kr)", min_value=100000, value=600000, step=10000)
+sykefravarsprosent = st.sidebar.slider("Sykefraværsprosent (%)", 0.0, 20.0, 5.0, 0.1)
+
+bruker_vikar = st.sidebar.checkbox("Bruker vikar ved fravær?")
+vikar_kostnad = st.sidebar.number_input("Vikarkostnad per dag (kr)", min_value=0, value=2500, step=500) if bruker_vikar else 0
+overtidsbruk = st.sidebar.checkbox("Bruker overtid ved fravær?")
+overtid_kostnad = st.sidebar.number_input("Overtidskostnad per dag (kr)", min_value=0, value=3000, step=500) if overtidsbruk else 0
+
 # 🎯 Beregninger
 arbeidsdager_per_aar = 260
 arbeidsgiverperiode = 16
@@ -104,7 +116,6 @@ total_aarskostnad = (total_kostnad_per_virksomhet + vikar_kostnad_total + overti
 st.subheader("Beregnet sykefraværskostnad")
 st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
 st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_virksomhet:,.0f} kr**")
-st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
 
 st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
 
