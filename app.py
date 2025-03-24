@@ -71,10 +71,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 🎯 Vise resultater
-st.subheader("Beregnet sykefraværskostnad")
-st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
-st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_virksomhet:,.0f} kr**")
 st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
 
 # 🎯 Legg til AS3-logo
@@ -89,8 +85,26 @@ st.markdown("""
 
 st.markdown("<div class='as3-container'>", unsafe_allow_html=True)
 
-st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
+# 🎯 Beregninger
+arbeidsdager_per_aar = 260
+arbeidsgiverperiode = 16
+direkte_lonnskostnad = (gjennomsnittslonn * (sykefravarsprosent / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
+sosiale_avgifter = direkte_lonnskostnad * 1.14
+indirekte_kostnader = direkte_lonnskostnad * 0.5
 
+# Totale kostnader
+vikar_kostnad_total = (vikar_kostnad * arbeidsgiverperiode * (sykefravarsprosent / 100) * antall_ansatte)
+overtid_kostnad_total = (overtid_kostnad * arbeidsgiverperiode * (sykefravarsprosent / 100) * antall_ansatte)
+
+total_kostnad_per_ansatt = sosiale_avgifter + indirekte_kostnader
+total_kostnad_per_virksomhet = total_kostnad_per_ansatt * antall_ansatte
+total_aarskostnad = (total_kostnad_per_virksomhet + vikar_kostnad_total + overtid_kostnad_total) * (arbeidsdager_per_aar / arbeidsgiverperiode)
+
+# 🎯 Vise resultater
+st.subheader("Beregnet sykefraværskostnad")
+st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
+st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_virksomhet:,.0f} kr**")
+st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**"
 
 
 
