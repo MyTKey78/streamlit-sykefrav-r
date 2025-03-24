@@ -127,7 +127,7 @@ st.success(f"💰 Potensiell årlig besparelse: **{aarsbesparelse:,.0f} kr**")
 # 🎯 Link til AS3
 st.markdown("""
 ---
-🔗 [Vil du ha hjelp til å få ned kostnadene? Ta kontakt med AS3 Norge](https://www.as3.no/for-virksomheter/#sykefravr)
+🔗 [Vil du ha hjelp til å få ned kostnadene? Ta kontakt med AS3 Norge](https://blog.as3.no/sykefrav%C3%A6r_tjenester)
 """)
 
 # 🎯 Kilder
