@@ -57,7 +57,16 @@ input[type='range']::-moz-range-track {
 input[type='range']::-ms-track {
     background: #084966;
 }
-</style>
+input[type='range']::-webkit-slider-runnable-track {
+            background: #084966;
+        }
+        input[type='range']::-moz-range-track {
+            background: #084966;
+        }
+        input[type='range']::-ms-track {
+            background: #084966;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
 # 🎯 Legg til AS3-logo
@@ -71,6 +80,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<div class='as3-container'>", unsafe_allow_html=True)
+
+# 🎯 Vise resultater
+st.subheader("Beregnet sykefraværskostnad")
+st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
+st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_virksomhet:,.0f} kr**")
+st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
 
 # 🎯 Brukerinput for interaktive beregninger
 st.sidebar.header("Inndata for beregninger")
@@ -167,6 +182,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
