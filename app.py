@@ -48,7 +48,16 @@ st.markdown("""
             border-radius: 8px;
             margin-top: 2rem;
         }
-    </style>
+    input[type='range']::-webkit-slider-runnable-track {
+    background: #084966;
+}
+input[type='range']::-moz-range-track {
+    background: #084966;
+}
+input[type='range']::-ms-track {
+    background: #084966;
+}
+</style>
 """, unsafe_allow_html=True)
 
 # 🎯 Legg til AS3-logo
@@ -128,29 +137,10 @@ st.download_button(
 # 🎯 Tiltaksanalyse
 st.subheader("🔍 Hvordan redusere sykefraværet?")
 
-def redusere_sykefravaer(analysevalg):
-    råd = ""
-    if "Arbeidsmiljø" in analysevalg:
-        råd += "- **Forbedre arbeidsmiljøet**: Sørg for et trygt og inkluderende arbeidsmiljø...\n\n"
-    if "Lederoppfølging" in analysevalg:
-        råd += "- **Styrk lederoppfølging**: Gi ledere opplæring i sykefraværsoppfølging...\n\n"
-    if "Helsefremmende tiltak" in analysevalg:
-        råd += "- **Helsefremmende tiltak**: Tilby trening, helsekontroller og støtte...\n\n"
-    if "Forebygging av langtidssykefravær" in analysevalg:
-        råd += "- **Tidlig intervensjon**: Kartlegg risiko og tilpass arbeid...\n\n"
-    if "Tilrettelegging" in analysevalg:
-        råd += "- **Tilpass arbeidsoppgaver** for ansatte med helseutfordringer...\n\n"
-    if råd == "":
-        råd = "Velg minst én faktor for å få anbefalinger."
-    return råd
-
-analysevalg = st.multiselect(
-    "Velg hvilke faktorer du vil analysere:",
-    ["Arbeidsmiljø", "Lederoppfølging", "Helsefremmende tiltak", "Forebygging av langtidssykefravær", "Tilrettelegging"]
-)
-
-if st.button("📉 Få råd for å redusere sykefravær"):
-    st.markdown(redusere_sykefravaer(analysevalg))
+st.markdown("""
+<p>Les mer om hvordan AS3 kan hjelpe med sykefraværsreduksjon her:</p>
+<a href="https://blog.as3.no/sykefrav%C3%A6r_tjenester" target="_blank">🔗 AS3 – Sykefraværstjenester</a>
+""", unsafe_allow_html=True)
 
 # 🎯 Besparelsesberegning
 st.subheader("💰 Potensiell besparelse ved lavere sykefravær")
@@ -177,8 +167,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
-
-
 
 
 
