@@ -17,9 +17,7 @@ st.markdown("""
         h1, h2, h3, .stButton>button {
             color: #084966;
         }
-        .stSlider > div[data-baseweb="slider"] > div {
-            background: #084966;
-        }
+        
         input[type='range']::-webkit-slider-runnable-track {
             background: #084966;
         }
@@ -127,7 +125,7 @@ st.success(f"💰 Potensiell årlig besparelse: **{aarsbesparelse:,.0f} kr**")
 # 🎯 Link til AS3
 st.markdown("""
 ---
-🔗 [Vil du ha hjelp til å få ned kostnadene? Ta kontakt med AS3 Norge](https://blog.as3.no/sykefrav%C3%A6r_tjenester)
+🔗 [Vil du få ned sykefraværskostnaden? Trykk her for å finne ut hvordan AS3 kan hjelpe deg.](https://blog.as3.no/sykefrav%C3%A6r_tjenester)
 """)
 
 # 🎯 Kilder
@@ -141,6 +139,7 @@ st.markdown("""
 
 # 🎯 Footer
 st.markdown("<div class='as3-footer'>© 2024 AS3 Norge</div>", unsafe_allow_html=True)
+
 
 
 
