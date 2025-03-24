@@ -108,6 +108,14 @@ st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_
 
 st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
 
+# 📌 Kildehenvisninger
+st.markdown("## 📚 Kildehenvisninger")
+st.markdown("""
+- **NAVs sykefraværsstatistikk**: [NAV – Sykefravær](https://www.nav.no/no/nav-og-samfunn/statistikk/sykefravar-statistikk)  
+- **Arbeidsgiverperioden på 16 dager**: [Lovdata – Folketrygdloven § 8-19](https://lovdata.no/dokument/NL/lov/1997-02-28-19/KAPITTEL_8#%C2%A78-19)  
+- **Sosiale avgifter (14%)**: Basert på vanlige norske arbeidsgiveravgifter  
+- **Indirekte kostnader (50% av lønn)**: HR-beregninger brukt i sykefraværsanalyser  
+""")
 
 
 
