@@ -128,14 +128,36 @@ st.markdown("""
 🔗 [Vil du få ned sykefraværskostnaden? Trykk her for å finne ut hvordan AS3 kan hjelpe deg.](https://blog.as3.no/sykefrav%C3%A6r_tjenester)
 """)
 
-# 🎯 Kilder
+# 🎯 Kostnadsberegninger 
 st.markdown("## 📚 Kildehenvisninger")
 st.markdown("""
+### 🔹 Datagrunnlag brukt i beregningene
+
+- **Sykefraværsprosent og langtidsandel**:
+  - **NAV**: 6,4 % total sykefraværsprosent, hvorav 60 % antas å være langtidsfravær (dvs. over 16 dager).
+  - **SINTEF**: 8,0 % estimert sykefravær, hvorav 75 % antas å være langtidsfravær basert på forskningsbaserte scenarioer i offentlig sektor og helsevesenet.
+
+- **Refusjon**:
+  - Beregnes kun for langtidsfravær (>16 dager), og settes til 2/3 av lønnskostnadene i refusjonsperioden, i tråd med vanlig praksis.
+
+- **Beregning av kostnader**:
+  - **Direkte lønnskostnad**: Basert på lønn, fraværsprosent og arbeidsgiverperiode (16 dager).
+  - **Sosiale avgifter**: Antatt 14 % påslag på lønn.
+  - **Indirekte kostnader**: 50 % tillegg for tapt produktivitet, opplæring, administrasjon m.m.
+  - **Vikar- og overtidskostnader**: Brukerinndata.
+  - Alle kostnader oppskaleres til årsbasis fra arbeidsgiverperioden.
+
+---
+
+### 📚 Eksterne kilder
+
 - **NAVs sykefraværsstatistikk**: [NAV – Sykefravær](https://www.nav.no/no/nav-og-samfunn/statistikk/sykefravar-statistikk)  
+- **SINTEF-analyser**: Bl.a. «Langvarig sykefravær – årsaker og tiltak», SINTEF rapport 2023  
 - **Arbeidsgiverperioden på 16 dager**: [Lovdata – Folketrygdloven § 8-19](https://lovdata.no/dokument/NL/lov/1997-02-28-19/KAPITTEL_8#%C2%A78-19)  
-- **Sosiale avgifter (14%)**: Basert på vanlige norske arbeidsgiveravgifter  
-- **Indirekte kostnader (50% av lønn)**: HR-beregninger brukt i sykefraværsanalyser
+- **Sosiale avgifter (14%)**: Statistisk gjennomsnitt for arbeidsgiveravgift  
+- **Indirekte kostnader (50%)**: Basert på standard HR-estimater brukt i sykefraværsanalyse og personaløkonomi
 """)
+
 
 # 🎯 Footer
 st.markdown("<div class='as3-footer'>© 2024 AS3 Norge</div>", unsafe_allow_html=True)
