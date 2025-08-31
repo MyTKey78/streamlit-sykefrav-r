@@ -53,6 +53,7 @@ vikar_kostnad = st.sidebar.number_input(
     value=0,
     step=500,
     help="Sett til 0 hvis dere ikke bruker vikar"
+)
 
 overtid_kostnad = st.sidebar.number_input(
     "Overtid-kostnad per dag (kr)",
@@ -60,7 +61,8 @@ overtid_kostnad = st.sidebar.number_input(
     value=0,
     step=500,
     help="Sett til 0 hvis dere ikke bruker overtid"
-    
+)
+
 # 🎯 Beregninger
 arbeidsdager_per_aar = 260
 arbeidsgiverperiode = 16
