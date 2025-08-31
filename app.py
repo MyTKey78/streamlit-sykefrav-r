@@ -48,11 +48,17 @@ gjennomsnittslonn = st.sidebar.number_input("Gjennomsnittslønn per ansatt (kr)"
 sykefravarsprosent = st.sidebar.slider("Sykefraværsprosent (%)", 0.0, 20.0, 5.0, 0.1)
 
 vikar_kostnad = st.sidebar.number_input(
-    "Vikar-kostnad per dag (kr)", min_value=0, value=0, step=500,
+    "Vikar-kostnad per dag (kr)",
+    min_value=0,
+    value=0,
+    step=500,
     help="Sett til 0 hvis dere ikke bruker vikar"
 
 overtid_kostnad = st.sidebar.number_input(
-    "Overtid-kostnad per dag (kr)", min_value=0, value=0, step=500,
+    "Overtid-kostnad per dag (kr)",
+    min_value=0,
+    value=0,
+    step=500,
     help="Sett til 0 hvis dere ikke bruker overtid"
     
 # 🎯 Beregninger
