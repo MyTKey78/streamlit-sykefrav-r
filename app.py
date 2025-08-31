@@ -67,7 +67,7 @@ st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_
 
 # 🎯 DataFrame og diagram
 df = pd.DataFrame({
-    "Kategori": ["Direkte lønnskostnader", "Sosiale avgifter", "Indirekte kostnader", "Vikarutgifter", "Overtidsutgifter"],
+    "Kategori": ["Direkte lønnskostnader", "Sosiale avgifter", "Indirekte kostnader"],
     "Kostnad (kr)": [
         direkte_lonnskostnad * antall_ansatte,
         sosiale_avgifter * antall_ansatte,
