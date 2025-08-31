@@ -139,7 +139,6 @@ st.markdown("""
   - **Direkte lønnskostnad**: Basert på lønn, fraværsprosent og arbeidsgiverperiode (16 dager).
   - **Sosiale avgifter**: Antatt 14 % påslag på lønn.
   - **Indirekte kostnader**: 50 % tillegg for tapt produktivitet, opplæring, administrasjon m.m.
-  - **Vikar- og overtidskostnader**: Brukerinndata.
   - Alle kostnader oppskaleres til årsbasis fra arbeidsgiverperioden.
 
 ---
