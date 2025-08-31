@@ -48,11 +48,6 @@ antall_ansatte = st.sidebar.number_input("Antall ansatte", min_value=1, value=50
 gjennomsnittslonn = st.sidebar.number_input("Gjennomsnittslønn per ansatt (kr)", min_value=100000, value=600000, step=10000)
 sykefravarsprosent = st.sidebar.slider("Sykefraværsprosent (%)", 0.0, 20.0, 5.0, 0.1)
 
-bruker_vikar = st.sidebar.checkbox("Bruker vikar ved fravær?")
-vikar_kostnad = st.sidebar.number_input("Vikarkostnad per dag (kr)", min_value=0, value=2500, step=500) if bruker_vikar else 0
-overtidsbruk = st.sidebar.checkbox("Bruker overtid ved fravær?")
-overtid_kostnad = st.sidebar.number_input("Overtidskostnad per dag (kr)", min_value=0, value=3000, step=500) if overtidsbruk else 0
-
 # 🎯 Beregninger
 arbeidsdager_per_aar = 260
 arbeidsgiverperiode = 16
