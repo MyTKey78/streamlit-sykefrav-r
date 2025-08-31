@@ -57,7 +57,7 @@ indirekte_kostnader = direkte_lonnskostnad * 0.5
 
 total_kostnad_per_ansatt = sosiale_avgifter + indirekte_kostnader
 total_kostnad_per_virksomhet = total_kostnad_per_ansatt * antall_ansatte
-total_aarskostnad = (total_kostnad_per_virksomhet + vikar_kostnad_total + overtid_kostnad_total) * (arbeidsdager_per_aar / arbeidsgiverperiode)
+total_aarskostnad = (total_kostnad_per_virksomhet) * (arbeidsdager_per_aar / arbeidsgiverperiode)
 
 # 🎯 Resultat
 st.subheader("Beregnet sykefraværskostnad")
