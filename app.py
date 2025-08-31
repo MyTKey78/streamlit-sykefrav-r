@@ -72,8 +72,7 @@ df = pd.DataFrame({
         direkte_lonnskostnad * antall_ansatte,
         sosiale_avgifter * antall_ansatte,
         indirekte_kostnader * antall_ansatte,
-        vikar_kostnad_total,
-        overtid_kostnad_total
+        
     ]
 })
 
