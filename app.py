@@ -17,16 +17,9 @@ st.markdown("""
         h1, h2, h3, .stButton>button {
             color: #084966;
         }
-        
-        input[type='range']::-webkit-slider-runnable-track {
-            background: #084966;
-        }
-        input[type='range']::-moz-range-track {
-            background: #084966;
-        }
-        input[type='range']::-ms-track {
-            background: #084966;
-        }
+        input[type='range']::-webkit-slider-runnable-track { background: #084966; }
+        input[type='range']::-moz-range-track { background: #084966; }
+        input[type='range']::-ms-track { background: #084966; }
         .as3-footer {
             text-align: center;
             margin-top: 3rem;
@@ -36,7 +29,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.image("https://raw.githubusercontent.com/MyTKey78/streamlit-sykefrav-r/main/as3%20logo%20-%20ingen%20bakgrunn.png", width=200)
+st.image(
+    "https://raw.githubusercontent.com/MyTKey78/streamlit-sykefrav-r/main/as3%20logo%20-%20ingen%20bakgrunn.png",
+    width=200
+)
 
 # 🎯 Tittel
 st.title("Sykefraværskostnader i virksomheten")
@@ -44,7 +40,9 @@ st.title("Sykefraværskostnader i virksomheten")
 # 🎯 Brukerinput for interaktive beregninger
 st.sidebar.header("Inndata for beregninger")
 antall_ansatte = st.sidebar.number_input("Antall ansatte", min_value=1, value=50)
-gjennomsnittslonn = st.sidebar.number_input("Gjennomsnittslønn per ansatt (kr)", min_value=100000, value=600000, step=10000)
+gjennomsnittslonn = st.sidebar.number_input(
+    "Gjennomsnittslønn per ansatt (kr)", min_value=100_000, value=600_000, step=10_000
+)
 sykefravarsprosent = st.sidebar.slider("Sykefraværsprosent (%)", 0.0, 20.0, 5.0, 0.1)
 
 vikar_kostnad = st.sidebar.number_input(
@@ -66,7 +64,10 @@ overtid_kostnad = st.sidebar.number_input(
 # 🎯 Beregninger
 arbeidsdager_per_aar = 260
 arbeidsgiverperiode = 16
-direkte_lonnskostnad = (gjennomsnittslonn * (sykefravarsprosent / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
+
+direkte_lonnskostnad = (
+    gjennomsnittslonn * (sykefravarsprosent / 100.0) * (arbeidsgiverperiode / arbeidsdager_per_aar)
+)
 sosiale_avgifter = direkte_lonnskostnad * 1.14
 indirekte_kostnader = direkte_lonnskostnad * 0.5
 
@@ -75,101 +76,17 @@ vikar_kostnad_total = (
 )
 overtid_kostnad_total = (
     float(overtid_kostnad) * arbeidsgiverperiode * (sykefravarsprosent / 100.0) * antall_ansatte
+)
 
 total_kostnad_per_ansatt = sosiale_avgifter + indirekte_kostnader
 total_kostnad_per_virksomhet = total_kostnad_per_ansatt * antall_ansatte
 total_aarskostnad = (
     (total_kostnad_per_virksomhet + vikar_kostnad_total + overtid_kostnad_total)
     * (arbeidsdager_per_aar / arbeidsgiverperiode)
+)
 
 # 🎯 Resultat
 st.subheader("Beregnet sykefraværskostnad")
 st.write(f"Totale kostnader for arbeidsgiverperioden per ansatt: **{total_kostnad_per_ansatt:,.0f} kr**")
 st.write(f"Totale kostnader for hele virksomheten i arbeidsgiverperioden: **{total_kostnad_per_virksomhet:,.0f} kr**")
-st.write(f"Årlige totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
-
-# 🎯 DataFrame og diagram
-df = pd.DataFrame({
-    "Kategori": ["Direkte lønnskostnader", "Sosiale avgifter", "Indirekte kostnader"],
-    "Kostnad (kr)": [
-        direkte_lonnskostnad * antall_ansatte,
-        sosiale_avgifter * antall_ansatte,
-        indirekte_kostnader * antall_ansatte,
-        
-    ]
-})
-
-st.subheader("Visuell fremstilling av kostnader")
-fig, ax = plt.subplots(figsize=(8,6))
-ax.bar(df["Kategori"], df["Kostnad (kr)"], color=["#084966", "#286488", "#3A7DA2", "#63CDF6", "#A3DAEB"])
-ax.set_ylabel("Kostnad (kr)")
-ax.set_title("Fordeling av sykefraværskostnader")
-ax.set_xticklabels(df["Kategori"], rotation=45, ha="right")
-st.pyplot(fig)
-
-# 🎯 Eksport til Excel
-excel_buffer = io.BytesIO()
-with pd.ExcelWriter(excel_buffer, engine='xlsxwriter') as writer:
-    df.to_excel(writer, sheet_name="Sykefraværskostnader", index=False)
-st.download_button(
-    label="📥 Last ned som Excel",
-    data=excel_buffer.getvalue(),
-    file_name="sykefraværskostnader.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
-
-# 🎯 Besparelsesberegning
-st.subheader("💰 Hvor mye kan virksomheten spare?")
-mål_sykefravær = st.slider("Sett et mål for sykefraværsprosent (%)", 0.0, sykefravarsprosent, sykefravarsprosent - 1.0, 0.1)
-
-direkte_lonnskostnad_ny = (gjennomsnittslonn * (mål_sykefravær / 100) * (arbeidsgiverperiode / arbeidsdager_per_aar))
-sosiale_avgifter_ny = direkte_lonnskostnad_ny * 1.14
-indirekte_kostnader_ny = direkte_lonnskostnad_ny * 0.5
-
-total_kostnad_per_ansatt_ny = sosiale_avgifter_ny + indirekte_kostnader_ny
-total_kostnad_per_virksomhet_ny = total_kostnad_per_ansatt_ny * antall_ansatte
-total_aarskostnad_ny = (total_kostnad_per_virksomhet_ny + vikar_kostnad_total + overtid_kostnad_total) * (arbeidsdager_per_aar / arbeidsgiverperiode)
-aarsbesparelse = total_aarskostnad - total_aarskostnad_ny
-
-st.write(f"🔹 Nåværende årlige kostnader: **{total_aarskostnad:,.0f} kr**")
-st.write(f"🔹 Ved {mål_sykefravær:.1f}% sykefravær: **{total_aarskostnad_ny:,.0f} kr**")
-st.success(f"💰 Potensiell årlig besparelse: **{aarsbesparelse:,.0f} kr**")
-
-# 🎯 Link til AS3
-st.markdown("""
----
-🔗 [Vil du få ned sykefraværskostnaden? Trykk her for å finne ut hvordan AS3 kan hjelpe deg.](https://blog.as3.no/sykefrav%C3%A6r_tjenester)
-""")
-
-# 🎯 Kostnadsberegninger 
-st.markdown("## 📚 Kildehenvisninger")
-st.markdown("""
-### 🔹 Datagrunnlag brukt i beregningene
-
-- **Sykefraværsprosent og langtidsandel**:
-  - **NAV**: 6,4 % total sykefraværsprosent, hvorav 60 % antas å være langtidsfravær (dvs. over 16 dager).
-  - **SINTEF**: 8,0 % estimert sykefravær, hvorav 75 % antas å være langtidsfravær basert på forskningsbaserte scenarioer i offentlig sektor og helsevesenet.
-
-- **Refusjon**:
-  - Beregnes kun for langtidsfravær (>16 dager), og settes til 2/3 av lønnskostnadene i refusjonsperioden, i tråd med vanlig praksis.
-
-- **Beregning av kostnader**:
-  - **Direkte lønnskostnad**: Basert på lønn, fraværsprosent og arbeidsgiverperiode (16 dager).
-  - **Sosiale avgifter**: Antatt 14 % påslag på lønn.
-  - **Indirekte kostnader**: 50 % tillegg for tapt produktivitet, opplæring, administrasjon m.m.
-  - Alle kostnader oppskaleres til årsbasis fra arbeidsgiverperioden.
-
----
-
-### 📚 Eksterne kilder
-
-- **NAVs sykefraværsstatistikk**: [NAV – Sykefravær](https://www.nav.no/no/nav-og-samfunn/statistikk/sykefravar-statistikk)  
-- **SINTEF-analyser**: Bl.a. «Langvarig sykefravær – årsaker og tiltak», SINTEF rapport 2023  
-- **Arbeidsgiverperioden på 16 dager**: [Lovdata – Folketrygdloven § 8-19](https://lovdata.no/dokument/NL/lov/1997-02-28-19/KAPITTEL_8#%C2%A78-19)  
-- **Sosiale avgifter (14%)**: Statistisk gjennomsnitt for arbeidsgiveravgift  
-- **Indirekte kostnader (50%)**: Basert på standard HR-estimater brukt i sykefraværsanalyse og personaløkonomi
-""")
-
-
-# 🎯 Footer
-st.markdown("<div class='as3-footer'>© 2024 AS3 Norge</div>", unsafe_allow_html=True)
+st.write(f"År
