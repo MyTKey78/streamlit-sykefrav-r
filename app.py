@@ -26,13 +26,13 @@ st.image(
     width=200
 )
 
-st.title("Sykefraværskostnader i virksomheten (SINTEF)")
+st.title("Sykefraværskostnader i virksomheten")
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Konstanter (REN SINTEF)
 # ────────────────────────────────────────────────────────────────────────────────
 ARBEIDSDAGER_PER_AAR = 260
-SINTEF_KOSTNAD_PER_DAG = 4200  # kr per årsverk per sykefraværsdag
+ESTIMERT KOSTNAD_PER_DAG = 4200  # kr per årsverk per sykefraværsdag
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Inndata (sidebar)
@@ -78,7 +78,7 @@ total_aarskostnad = total_per_arsverk * antall_ansatte  # <-- DEFINERT TIDLIG
 # ────────────────────────────────────────────────────────────────────────────────
 # Resultatvisning – dagens nivå
 # ────────────────────────────────────────────────────────────────────────────────
-st.subheader("Dagens kostnader (REN SINTEF som grunnlag)")
+st.subheader("Dagens kostnader")
 col1, col2, col3 = st.columns(3)
 col1.metric("Sykedager pr. årsverk", f"{sykedager_per_arsverk:,.1f} dager")
 col2.metric("SINTEF-kost pr. årsverk", f"{sintef_kost_per_arsverk:,.0f} kr")
@@ -91,7 +91,7 @@ st.metric("Total årlig kostnad (dagens)", f"{total_aarskostnad:,.0f} kr")
 # Sammensetning – tabell + diagram
 # ────────────────────────────────────────────────────────────────────────────────
 rows = [
-    {"Kategori": "SINTEF-basiskostnad", "Kostnad (kr)": sintef_kost_per_arsverk * antall_ansatte},
+    {"Kategori": "Basiskostnad", "Kostnad (kr)": sintef_kost_per_arsverk * antall_ansatte},
     {"Kategori": "Vikar (tillegg)", "Kostnad (kr)": (sykedager_per_arsverk * vikar_kostnad_per_dag) * antall_ansatte},
     {"Kategori": "Overtid (tillegg)", "Kostnad (kr)": (sykedager_per_arsverk * overtid_kostnad_per_dag) * antall_ansatte},
 ]
