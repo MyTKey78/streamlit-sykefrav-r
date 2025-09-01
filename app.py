@@ -83,6 +83,7 @@ agp_arbeidsdager = st.sidebar.number_input(
 #  - Vikar/overtid knyttes til AGP-dager, skalert på antall tilfeller og ansatte
 # ────────────────────────────────────────────────────────────────────────────────
 arbeidsdager_per_aar = 260
+arbeidsgiverperiode = 16
 aga_sats = 0.141  # 14,1% (endre hvis dere bruker annen sone)
 
 # Dagskost inkl. AGA
