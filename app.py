@@ -32,7 +32,7 @@ st.title("Sykefraværskostnader i virksomheten")
 # Konstanter (REN SINTEF)
 # ────────────────────────────────────────────────────────────────────────────────
 ARBEIDSDAGER_PER_AAR = 260
-ESTIMERT KOSTNAD_PER_DAG = 4200  # kr per årsverk per sykefraværsdag
+ESTIMERT_KOSTNAD_PER_DAG = 4200  # kr per årsverk per sykefraværsdag
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Inndata (sidebar)
