@@ -74,11 +74,6 @@ agp_arbeidsdager = st.sidebar.number_input(
     help="Helger gir normalt ikke lønn – 16 kalenderdager ≈ ca. 12 arbeidsdager"
 )
 
-# Hvor mange ARBEIDSDAGER av de første 16 kalenderdagene som faktisk gir lønnskost (typisk ~12)
-agp_arbeidsdager = st.sidebar.number_input(
-    "AGP-arbeidsdager (av 16 kal.dager)", min_value=1, value=12, step=1,
-    help="Helger gir normalt ikke lønn – 16 kalenderdager ≈ ca. 12 arbeidsdager"
-)
 # ────────────────────────────────────────────────────────────────────────────────
 # Beregninger (KORRIGERT LOGIKK)
 #  - Dagskost = årslønn * (1 + AGA) / 260
