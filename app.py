@@ -81,7 +81,7 @@ total_aarskostnad = total_per_arsverk * antall_ansatte  # <-- DEFINERT TIDLIG
 st.subheader("Dagens kostnader")
 col1, col2, col3 = st.columns(3)
 col1.metric("Sykedager pr. årsverk", f"{sykedager_per_arsverk:,.1f} dager")
-col2.metric("SINTEF-kost pr. årsverk", f"{sintef_kost_per_arsverk:,.0f} kr")
+col2.metric("Kostnader pr. årsverk", f"{sintef_kost_per_arsverk:,.0f} kr")
 col3.metric("Tillegg pr. årsverk", f"{tillegg_per_arsverk:,.0f} kr")
 
 st.write("---")
