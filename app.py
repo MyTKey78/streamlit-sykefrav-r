@@ -49,75 +49,90 @@ overtid_kostnad = st.sidebar.number_input(
     "Overtid-kostnad per dag (kr)", min_value=0, value=0, step=500,
     help="Sett til 0 hvis dere ikke bruker overtid"
 )
+Antall sykefraværstilfeller pr ansatt per år (gjennomsnitt)
+tilfeller_per_ansatt = st.sidebar.number_input(
+    "Tilfeller pr ansatt pr år", min_value=0.0, value=1.0, step=0.1
+)
 
+# Hvor mange ARBEIDSDAGER av de første 16 kalenderdagene som faktisk gir lønnskost (typisk ~12)
+agp_arbeidsdager = st.sidebar.number_input(
+    "AGP-arbeidsdager (av 16 kal.dager)", min_value=1, value=12, step=1,
+    help="Helger gir normalt ikke lønn – 16 kalenderdager ≈ ca. 12 arbeidsdager"
+)
 # ────────────────────────────────────────────────────────────────────────────────
-# Beregninger
-#  - Beholder opprinnelig logikk din (sosiale_avgifter = direkte * 1.14, osv.)
-#  - Skalerer fra AGP (16 dager) til årsestimat (260 arb.dager).
+# Beregninger (KORRIGERT LOGIKK)
+#  - Dagskost = årslønn * (1 + AGA) / 260
+#  - AGP-kostnad pr TILFELLE = dagskost * agp_arbeidsdager (ingen NAV-refusjon i AGP)
+#  - Per ansatt pr år = pr tilfelle * tilfeller_per_ansatt
+#  - For virksomheten = per ansatt * antall ansatte
+#  - Vikar/overtid knyttes til AGP-dager, skalert på antall tilfeller og ansatte
 # ────────────────────────────────────────────────────────────────────────────────
 arbeidsdager_per_aar = 260
-arbeidsgiverperiode = 16
+aga_sats = 0.141  # 14,1% (endre hvis dere bruker annen sone)
 
-# Direkte lønnskost i AGP gitt sykefraværsprosent
-direkte_lonnskostnad = (
-    gjennomsnittslonn
-    * (sykefravarsprosent / 100.0)
-    * (arbeidsgiverperiode / arbeidsdager_per_aar)
-)
+# Dagskost inkl. AGA
+dagskost = gjennomsnittslonn * (1.0 + aga_sats) / arbeidsdager_per_aar
 
-# I originalen var sosiale_avgifter = direkte * 1.14 (inkluderer direkte + 14%)
-sosiale_avgifter = direkte_lonnskostnad * 1.14
-indirekte_kostnader = direkte_lonnskostnad * 0.5
+# Kostnad i arbeidsgiverperioden PR TILFELLE (ingen refusjon)
+agp_kostnad_pr_tilfelle = dagskost * agp_arbeidsdager
 
-# Totale kostnader i AGP som følge av vikar/overtid (per dag * AGP-dager * fraværsandel * antall)
-vikar_kostnad_total = (
-    float(vikar_kostnad) * arbeidsgiverperiode * (sykefravarsprosent / 100.0) * antall_ansatte
-)
-overtid_kostnad_total = (
-    float(overtid_kostnad) * arbeidsgiverperiode * (sykefravarsprosent / 100.0) * antall_ansatte
-)
+# Estimat PR ANSATT PR ÅR (gitt antall tilfeller pr ansatt)
+agp_kostnad_pr_ansatt_pr_aar = agp_kostnad_pr_tilfelle * float(tilfeller_per_ansatt)
 
-# Totalt i AGP per ansatt og for virksomheten (uten vikar/overtid)
-total_kostnad_per_ansatt = sosiale_avgifter + indirekte_kostnader
-total_kostnad_per_virksomhet = total_kostnad_per_ansatt * antall_ansatte
+# For hele virksomheten
+agp_kostnad_virksomhet_pr_aar = agp_kostnad_pr_ansatt_pr_aar * int(antall_ansatte)
 
-# Årsestimat (inkluderer vikar/overtid i årssummen, slik originalen gjorde)
-total_aarskostnad = (
-    (total_kostnad_per_virksomhet + vikar_kostnad_total + overtid_kostnad_total)
-    * (arbeidsdager_per_aar / arbeidsgiverperiode)
-)
+# Vikar/overtid i AGP (per dag * AGP-dager * antall tilfeller * antall ansatte)
+vikar_kostnad_total = float(vikar_kostnad) * int(agp_arbeidsdager) * float(tilfeller_per_ansatt) * int(antall_ansatte)
+overtid_kostnad_total = float(overtid_kostnad) * int(agp_arbeidsdager) * float(tilfeller_per_ansatt) * int(antall_ansatte)
+
+# Inkluder evt. «indirekte» kostnader som multiplikator (valgfritt).
+# Her bevarer vi din 50%-antakelse, men anvender den på AGP-grunnkost (uten vikar/overtid).
+indirekte_andel = 0.50
+indirekte_kostnader_virksomhet = agp_kostnad_virksomhet_pr_aar * indirekte_andel
+
+# Totalt (AGP-relatert) pr år for virksomheten
+total_agp_virksomhet_pr_aar = agp_kostnad_virksomhet_pr_aar + indirekte_kostnader_virksomhet + vikar_kostnad_total + overtid_kostnad_total
+
+# Merk: sykefraværsprosent brukes ikke lenger direkte i AGP-kostnaden – AGP avhenger av antall tilfeller.
+# Hvis du ønsker en egen «fullt årsfravær»-kostnad basert på prosent, kan vi legge til det som separat visning senere.
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Resultatvisning
 # ────────────────────────────────────────────────────────────────────────────────
-st.subheader("Beregnet sykefraværskostnad")
-st.write(f"Totale kostnader for arbeidsgiverperioden **per ansatt**: **{total_kostnad_per_ansatt:,.0f} kr**")
-st.write(f"Totale kostnader for arbeidsgiverperioden **for hele virksomheten**: **{total_kostnad_per_virksomhet:,.0f} kr**")
-st.write(f"**Årlige** totale sykefraværskostnader (inkl. vikar/overtid): **{total_aarskostnad:,.0f} kr**")
+st.write(f"Kostnad i AGP **per tilfelle** (uten refusjon): **{agp_kostnad_pr_tilfelle:,.0f} kr**")
+st.write(f"Kostnad i AGP **per ansatt per år** (gitt {tilfeller_per_ansatt:.1f} tilfeller): **{agp_kostnad_pr_ansatt_pr_aar:,.0f} kr**")
+st.write(f"AGP-kostnad **for hele virksomheten per år** (inkl. indirekte {int(indirekte_andel*100)}%, vikar og overtid): **{total_agp_virksomhet_pr_aar:,.0f} kr**")
 
 # ────────────────────────────────────────────────────────────────────────────────
 # Sammensetning (AGP) – tabell + diagram
 #   For søylediagrammet viser vi 'Sosiale avgifter' som KUN 14%-delen,
 #   slik at «direkte» ikke dobbelttelles i søylene.
 # ────────────────────────────────────────────────────────────────────────────────
-direkte_sum = float(direkte_lonnskostnad) * antall_ansatte
-avgift_only_sum = float(direkte_lonnskostnad) * 0.14 * antall_ansatte  # kun 14% påslag
-indirekte_sum = float(indirekte_kostnader) * antall_ansatte
+direkte_dagskost = gjennomsnittslonn / arbeidsdager_per_aar
+aga_dagskost = direkte_dagskost * aga_sats
+
+# Sum for virksomheten, pr år (skalert med tilfeller og agp_arbeidsdager)
+faktor = int(antall_ansatte) * float(tilfeller_per_ansatt) * int(agp_arbeidsdager)
+
+direkte_sum = direkte_dagskost * faktor
+aga_sum = aga_dagskost * faktor
+indirekte_sum = (direkte_sum + aga_sum) * indirekte_andel
 
 rows = [
-    {"Kategori": "Direkte lønnskostnader", "Kostnad (kr)": direkte_sum},
-    {"Kategori": "Sosiale avgifter (14%)", "Kostnad (kr)": avgift_only_sum},
+    {"Kategori": "Direkte lønn (AGP)", "Kostnad (kr)": direkte_sum},
+    {"Kategori": "Arbeidsgiveravgift (AGP)", "Kostnad (kr)": aga_sum},
     {"Kategori": "Indirekte kostnader (50%)", "Kostnad (kr)": indirekte_sum},
     {"Kategori": "Vikarutgifter (AGP)", "Kostnad (kr)": float(vikar_kostnad_total)},
     {"Kategori": "Overtidsutgifter (AGP)", "Kostnad (kr)": float(overtid_kostnad_total)},
 ]
 df = pd.DataFrame.from_records(rows)
 
-st.subheader("Visuell fremstilling av kostnader i arbeidsgiverperioden (AGP)")
+st.subheader("Visuell fremstilling av AGP-kostnader (per år, virksomheten)")
 fig, ax = plt.subplots(figsize=(8, 6))
-ax.bar(df["Kategori"], df["Kostnad (kr)"], color=["#084966", "#286488", "#3A7DA2", "#63CDF6", "#A3DAEB"])
+ax.bar(df["Kategori"], df["Kostnad (kr)"])
 ax.set_ylabel("Kostnad (kr)")
-ax.set_title("Fordeling av sykefraværskostnader (AGP)")
+ax.set_title("Fordeling av sykefraværskostnader i arbeidsgiverperioden (AGP)")
 ax.set_xticks(range(len(df)))
 ax.set_xticklabels(df["Kategori"], rotation=45, ha="right")
 st.pyplot(fig)
