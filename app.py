@@ -82,6 +82,19 @@ st.subheader("Dagens kostnader")
 col1, col2, col3 = st.columns(3)
 col1.metric("Sykedager pr. årsverk", f"{sykedager_per_arsverk:,.1f} dager")
 col2.metric("Kostnader pr. årsverk", f"{sintef_kost_per_arsverk:,.0f} kr")
+
+kostnad_per_arsverk = st.number_input(
+    "Kostnad per årsverk (kr)",
+    min_value=0, value=int(total_per_arsverk), step=1000,
+    help=(
+        "Nei – 4200 kr per sykefraværsdag per årsverk (SINTEF-tallet) "
+        "er en samlet gjennomsnittskostnad beregnet av SINTEF, og det inkluderer:\n\n"
+        "• Direkte lønnskostnader\n"
+        "• Arbeidsgiveravgift\n"
+        "• Indirekte kostnader (f.eks. tapt produktivitet, administrasjon)\n\n"
+        "👉 Det inkluderer normalt ikke konkrete vikar- og overtidskostnader, "
+        "fordi det varierer mye mellom virksomheter."
+
 col3.metric("Tillegg pr. årsverk", f"{tillegg_per_arsverk:,.0f} kr")
 
 st.write("---")
