@@ -34,24 +34,44 @@ st.title("Sykefraværskostnader i virksomheten")
 #  - Vikar/overtid er med igjen som i originalen (per dag).
 # ────────────────────────────────────────────────────────────────────────────────
 st.sidebar.header("Inndata for beregninger")
-antall_ansatte = st.sidebar.number_input("Antall ansatte", min_value=1, value=50, step=1)
-gjennomsnittslonn = st.sidebar.number_input(
-    "Gjennomsnittslønn per ansatt (kr)", min_value=100_000, value=600_000, step=10_000
-)
-sykefravarsprosent = st.sidebar.slider("Sykefraværsprosent (%)", 0.0, 20.0, 5.0, 0.1)
 
-# Disse to var årsaken til NameError tidligere – nå er de tilbake som inndata:
+antall_ansatte = st.sidebar.number_input(
+    "Antall ansatte", min_value=1, value=50, step=1
+)
+
+gjennomsnittslonn = st.sidebar.number_input(
+    "Gjennomsnittslønn per ansatt (kr)",
+    min_value=100_000, value=600_000, step=10_000
+)
+
+sykefravarsprosent = st.sidebar.slider(
+    "Sykefraværsprosent (%)",
+    0.0, 20.0, 5.0, 0.1
+)
+
 vikar_kostnad = st.sidebar.number_input(
-    "Vikar-kostnad per dag (kr)", min_value=0, value=0, step=500,
+    "Vikar-kostnad per dag (kr)",
+    min_value=0, value=0, step=500,
     help="Sett til 0 hvis dere ikke bruker vikar"
 )
+
 overtid_kostnad = st.sidebar.number_input(
-    "Overtid-kostnad per dag (kr)", min_value=0, value=0, step=500,
+    "Overtid-kostnad per dag (kr)",
+    min_value=0, value=0, step=500,
     help="Sett til 0 hvis dere ikke bruker overtid"
 )
-Antall sykefraværstilfeller pr ansatt per år (gjennomsnitt)
+
+# Antall sykefraværstilfeller pr ansatt per år (gjennomsnitt)
 tilfeller_per_ansatt = st.sidebar.number_input(
-    "Tilfeller pr ansatt pr år", min_value=0.0, value=1.0, step=0.1
+    "Tilfeller pr ansatt pr år",
+    min_value=0.0, value=1.0, step=0.1
+)
+
+# Hvor mange ARBEIDSDAGER av de første 16 kalenderdagene som faktisk gir lønnskost (typisk ~12)
+agp_arbeidsdager = st.sidebar.number_input(
+    "AGP-arbeidsdager (av 16 kal.dager)",
+    min_value=1, value=12, step=1,
+    help="Helger gir normalt ikke lønn – 16 kalenderdager ≈ ca. 12 arbeidsdager"
 )
 
 # Hvor mange ARBEIDSDAGER av de første 16 kalenderdagene som faktisk gir lønnskost (typisk ~12)
